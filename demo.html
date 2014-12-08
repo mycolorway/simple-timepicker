@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Timepicker Demo</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="styles/timepicker.css"/>
+    <style type="text/css">
+        html, body {
+            background:#F9F9F9;
+            padding: 0;
+            margin: 0;
+            font: 14px/1.6 "Lucida Grande", "Helvetica", sans-serif;
+            color: #333;
+        }
+        .wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            color: rgb(113, 113, 113);
+        }
+        header {
+            margin: 50px 0;
+            text-align: center;
+        }
+        section {
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <header>
+            <h1>Simple Timepicker</h3>
+        </header>
+        <section>
+            <div id="time">pm 04:40</div>
+        </section>
+    </div>
+    <script type="text/javascript" src="vendor/bower/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="vendor/bower/simple-module/lib/module.js"></script>
+    <script type="text/javascript" src="vendor/bower/moment/moment.js"></script>
+    <script type="text/javascript" src="lib/timepicker.js"></script> 
+    <script type="text/javascript">
+        var timepicker = simple.timepicker({target: '#time', time: '16:40'})
+        timepicker.on('timepicked', function(e, time){
+            $('#time').text(time.format('a hh:mm'))
+        });
+    </script>
+</body>
+
+</html>
+
+
