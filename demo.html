@@ -24,6 +24,14 @@
         section {
             margin: 30px 0;
         }
+        #time {
+            border-radius: 20px;
+            border: 1px solid black;
+            text-align: center
+        ;
+            width: 80px;
+            padding: 0 20px;
+        }
     </style>
 </head>
 
@@ -42,7 +50,7 @@
     <script type="text/javascript" src="vendor/bower/moment/moment.js"></script>
     <script type="text/javascript" src="lib/timepicker.js"></script> 
     <script type="text/javascript">
-        var timepicker = simple.timepicker({target: '#time', time: '16:40'})
+        var timepicker = simple.timepicker({target: '#time', time: '16:40', offset: 10})
         timepicker.on('timepicked', function(e, time){
             $('#time').text(time.format('a hh:mm'))
         });

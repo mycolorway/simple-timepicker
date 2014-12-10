@@ -25,5 +25,5 @@
     "grunt-contrib-jasmine": "0.x",
     "grunt-umd": "2.x"
   },
-  "keywords": ['timepicker']
+  "keywords": ["timepicker"]
 }

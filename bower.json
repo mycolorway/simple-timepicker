@@ -10,7 +10,7 @@
     "lib/timepicker.js",
     "styles/timepicker.css"
   ],
-  "keywords": ['timepicker'],
+  "keywords": ["timepicker"],
   "license": "MIT",
   "ignore": [
     "**/.*",

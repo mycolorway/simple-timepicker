@@ -1,0 +1,87 @@
+$active-color: #c3deee;
+$default-color: #f0f0f0;
+$hover-color: #C2D8FF;
+$bg-color: #fefefe;
+
+.simple-timepicker {
+  width: 150px;
+  background: $bg-color;
+  font-size: 12px;
+  text-align: center;
+  padding: 5px;
+  border: 1px solid #dddddd;
+
+  .time {
+    font-size: 13px;
+    margin: 2px 0 5px 0;
+  }
+
+  .picker {
+    .segment {
+      display: inline-block;
+      margin-right: 5px;
+      .clock {
+        padding: 2px 3px;
+        cursor: pointer;
+        background: $default-color;
+        &.active {
+          background: $active-color;
+        }
+        &:hover {
+          background: $hover-color;
+        }
+      }
+    }
+
+    .hours {
+      display: inline-block;
+      width: 40px;
+      vertical-align: top;
+    }
+
+    .divider {
+      position: relative;
+      color: #939393;
+      top: 25px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .minutes {
+      display: inline-block;
+      width: 40px;
+      vertical-align: top;
+    }
+
+    .hour, .minute {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      height: 20px;
+      width: 20px;
+      display: inline-block;
+      cursor: pointer;
+      background: $default-color;
+      &.active {
+        background: $active-color !important;
+      }
+      &:hover {
+        background: $hover-color;
+      }
+    }
+  }
+  .buttons {
+    margin-top: 10px;
+    &>* {
+      display: inline-block;
+      cursor: pointer;
+    }
+    .btn {
+      color: #fff;
+      background-color: #8baf47;
+      border-radius: 5px;
+      font-size: 13px;
+      padding: 2px 7px;
+      margin-right: 5px;
+    }
+  }
+}
