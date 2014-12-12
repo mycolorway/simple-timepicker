@@ -25,12 +25,7 @@
             margin: 30px 0;
         }
         #time {
-            border-radius: 20px;
-            border: 1px solid black;
-            text-align: center
-        ;
             width: 80px;
-            padding: 0 20px;
         }
     </style>
 </head>
@@ -39,10 +34,10 @@
 
     <div class="wrapper">
         <header>
-            <h1>Simple Timepicker</h3>
+            <h1>Simple Timepicker</h1>
         </header>
         <section>
-            <div id="time">pm 04:40</div>
+            <input id="time" />
         </section>
     </div>
     <script type="text/javascript" src="vendor/bower/jquery/dist/jquery.min.js"></script>
@@ -50,10 +45,7 @@
     <script type="text/javascript" src="vendor/bower/moment/moment.js"></script>
     <script type="text/javascript" src="lib/timepicker.js"></script> 
     <script type="text/javascript">
-        var timepicker = simple.timepicker({target: '#time', time: '16:40', offset: 10})
-        timepicker.on('timepicked', function(e, time){
-            $('#time').text(time.format('a hh:mm'))
-        });
+        var timepicker = simple.timepicker({target: '#time', time: '08:42', offset: 10, inline: false});
     </script>
 </body>
 

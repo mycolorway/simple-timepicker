@@ -10,19 +10,19 @@
   font-size: 13px;
   margin: 2px 0 5px 0;
 }
-.simple-timepicker .picker .segment {
+.simple-timepicker .picker .meridiem {
   display: inline-block;
   margin-right: 5px;
 }
-.simple-timepicker .picker .segment .clock {
+.simple-timepicker .picker .meridiem .clock {
   padding: 2px 3px;
   cursor: pointer;
   background: #f0f0f0;
 }
-.simple-timepicker .picker .segment .clock.active {
+.simple-timepicker .picker .meridiem .clock.active {
   background: #c3deee;
 }
-.simple-timepicker .picker .segment .clock:hover {
+.simple-timepicker .picker .meridiem .clock:hover {
   background: #C2D8FF;
 }
 .simple-timepicker .picker .hours {
@@ -60,6 +60,7 @@
 }
 .simple-timepicker .buttons {
   margin-top: 10px;
+  margin-bottom: 5px;
 }
 .simple-timepicker .buttons > * {
   display: inline-block;
@@ -68,8 +69,7 @@
 .simple-timepicker .buttons .btn {
   color: #fff;
   background-color: #8baf47;
-  border-radius: 5px;
-  font-size: 13px;
-  padding: 2px 7px;
+  border-radius: 3px;
+  padding: 3px 7px;
   margin-right: 5px;
 }

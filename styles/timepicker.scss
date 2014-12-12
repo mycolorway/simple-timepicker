@@ -17,7 +17,7 @@ $bg-color: #fefefe;
   }
 
   .picker {
-    .segment {
+    .meridiem {
       display: inline-block;
       margin-right: 5px;
       .clock {
@@ -71,6 +71,7 @@ $bg-color: #fefefe;
   }
   .buttons {
     margin-top: 10px;
+    margin-bottom: 5px;
     &>* {
       display: inline-block;
       cursor: pointer;
@@ -78,9 +79,8 @@ $bg-color: #fefefe;
     .btn {
       color: #fff;
       background-color: #8baf47;
-      border-radius: 5px;
-      font-size: 13px;
-      padding: 2px 7px;
+      border-radius: 3px;
+      padding: 3px 7px;
       margin-right: 5px;
     }
   }

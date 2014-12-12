@@ -2,5 +2,6 @@
 describe 'Simple timepicker', ->
 
   it 'should inherit from SimpleModule', ->
-    timepicker = simple.timepicker({target: 'body'})
+    $('<input id="time">').appendTo 'body'
+    timepicker = simple.timepicker({target: '#time'})
     expect(timepicker instanceof SimpleModule).toBe(true)
