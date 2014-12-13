@@ -1,5 +1,18 @@
 
 class Timepicker extends SimpleModule
+  @i18n:
+    'zh-CN':
+      'am': '上午'
+      'pm': '下午'
+      'time-format': 'h点m分'
+      'ok': '确定'
+      'cancel': '取消'
+    'en':
+      'am': 'AM'
+      'pm': 'PM'
+      'time-format': 'hh:mm'
+      'ok': 'OK'
+      'cancel': 'cancel'
   opts:
     target: null
     inline: false
@@ -8,32 +21,33 @@ class Timepicker extends SimpleModule
   hoursOpts: ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11']
   minutesOpts: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55']
 
-  tpl: '''
+  tpl: """
     <div class="simple-timepicker">
       <div class="time"></div>
       <div class="picker">
         <div class="meridiem">
-          <div class="clock am">上午</div>
-          <div class="clock pm">下午</div>
+          <div class="clock am" data-meridiem="am">#{@_t('am')}</div>
+          <div class="clock pm" data-meridiem="pm">#{@_t('pm')}</div>
         </div>
         <div class="hours"></div>
         <span class="divider">:</span>
         <div class="minutes"></div>
       </div>
       <div class="buttons">
-        <div class="btn btn-ok">确定</div>
-        <div class="link link-cancel">取消</div>
+        <div class="btn btn-ok">#{@_t('ok')}</div>
+        <div class="link link-cancel">#{@_t('cancel')}</div>
       </div>
     </div>
-  '''
+  """
 
   hourTpl: '<div class="hour"></div>'
   minuteTpl: '<div class="minute"></div>'
 
   _init: ->
     @target = $(@opts.target)
-    @oldTime = @target.val()
     throw new Error "simple-timepicker: target option is invalid" if @target.length == 0 or not @target.is 'input'
+
+    @target.data @
 
     @_render()
     @_bind()
@@ -57,17 +71,30 @@ class Timepicker extends SimpleModule
         .appendTo @minutes
 
     @setTime(@opts.time)
-    @_setPosition()
 
     @el.css('display', 'none')
       .insertAfter @target
-    @show() if @opts.inline
+
+    if @opts.inline
+      @show()
+    else
+      @_setPosition()
+
+      @target.on 'focus.simple-timepicker', =>
+        @show()
+      .focus()
+
+      $(document).on 'click.simple-timepicker', (e) =>
+        return if $(e.target).is @target
+        @target.val(@oldTime)
+        @hide()
 
   _bind: ->
-    unless @opts.inline
-      @target.on 'click', =>
-        @oldTime = @target.val()
-        @show()
+    @el.on 'click.simple-timepicker', ->
+      false
+
+    @el.on 'mousedown.simple-timepicker', ->
+      false
 
     @el.on 'click.simple-timepicker', '.link-cancel', (e) =>
       e.preventDefault()
@@ -75,11 +102,9 @@ class Timepicker extends SimpleModule
       @hide() unless @opts.inline
 
     @el.on 'click.simple-timepicker', '.btn-ok', =>
+      @oldTime = @target.val()
       @hide() unless @opts.inline
       @trigger('timepicked', [@time])
-
-    @el.on 'mousedown', ->
-      false
 
     @el.on 'click.simple-timepicker', '.clock', (e) =>
       $target = $(e.currentTarget)
@@ -106,20 +131,21 @@ class Timepicker extends SimpleModule
 
   _unbind: ->
     @el.off '.simple-timepicker'
+    $(document).off '.simple-timepicker'
+    @target.off '.simple-timepicker'
 
   _refreshTime: ->
-    meridiem = if @el.find('.clock.active').text() is '上午' then 'am' else 'pm'
-    hour = @el.find('.hour.active').text()
-    minute = @el.find('.minute.active').text()
+    meridiem = @el.find('.clock.active').data 'meridiem'
+    hour = @el.find('.hour.active').data 'hour'
+    minute = @el.find('.minute.active').data 'minute'
 
     @time = moment("#{meridiem} #{hour}:#{minute}",'a hh:mm')
     @_renderTime()
 
   _renderTime: ->
-    meridiem = if @time.format('a') is 'am' then '上午' else '下午'
-    @el.find('.time').text(meridiem + ' ' + @time.format('h时m分'))
+    meridiem = @_t @time.format('a')
+    @el.find('.time').text(meridiem + ' ' + @time.format(@_t('time-format')))
     @target.val(@time.format('HH:mm'))
-
 
   _setPosition: ->
     offset = @target.offset()
@@ -130,6 +156,7 @@ class Timepicker extends SimpleModule
       'top': offset.top + @target.outerHeight(true) + @opts.offset
 
   show: ->
+    @oldTime = @target.val()
     @el.show()
 
   hide: ->
@@ -152,7 +179,7 @@ class Timepicker extends SimpleModule
     minute = Math.round(minute / 5) * 5 #force end with 5/0
     @time.set('minute', minute)
 
-    @el.find(".#{meridiem}").addClass('active')
+    @el.find("[data-meridiem=#{meridiem}]").addClass('active')
       .siblings().removeClass('active')
     @el.find("[data-hour=#{hour}]").addClass('active')
       .siblings().removeClass('active')
