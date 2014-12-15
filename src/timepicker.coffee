@@ -4,19 +4,18 @@ class Timepicker extends SimpleModule
     'zh-CN':
       'am': '上午'
       'pm': '下午'
-      'time-format': 'h点m分'
       'ok': '确定'
       'cancel': '取消'
     'en':
       'am': 'AM'
       'pm': 'PM'
-      'time-format': 'hh:mm'
       'ok': 'OK'
       'cancel': 'cancel'
   opts:
     target: null
     inline: false
     offset: 0
+    format: 'HH:mm'
 
   hoursOpts: ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11']
   minutesOpts: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55']
@@ -54,6 +53,7 @@ class Timepicker extends SimpleModule
 
   _render: ->
     @el = $(@tpl)
+    @el.data @
 
     @hours = @el.find('.hours')
     @minutes = @el.find('.minutes')
@@ -72,20 +72,18 @@ class Timepicker extends SimpleModule
 
     @setTime(@opts.time)
 
-    @el.css('display', 'none')
-      .insertAfter @target
-
     if @opts.inline
-      @show()
+      @el.insertAfter @target
     else
+      @el.css('display', 'none')
+        .appendTo 'body'
       @_setPosition()
 
       @target.on 'focus.simple-timepicker', =>
         @show()
       .focus()
 
-      $(document).on 'click.simple-timepicker', (e) =>
-        return if $(e.target).is @target
+      @target.on 'blur.simple-timepicker', (e) =>
         @target.val(@oldTime)
         @hide()
 
@@ -104,6 +102,7 @@ class Timepicker extends SimpleModule
     @el.on 'click.simple-timepicker', '.btn-ok', =>
       @oldTime = @target.val()
       @hide() unless @opts.inline
+      @target.blur()
       @trigger('timepicked', [@time])
 
     @el.on 'click.simple-timepicker', '.clock', (e) =>
@@ -115,7 +114,6 @@ class Timepicker extends SimpleModule
 
     @el.on 'click.simple-timepicker', '.hour', (e) =>
       $target = $(e.currentTarget)
-      hour = $target.text()
       $target.addClass('active')
         .siblings().removeClass('active')
 
@@ -123,7 +121,6 @@ class Timepicker extends SimpleModule
 
     @el.on 'click.simple-timepicker', '.minute', (e) =>
       $target = $(e.currentTarget)
-      minute = $target.text()
       $target.addClass('active')
         .siblings().removeClass('active')
 
@@ -143,9 +140,9 @@ class Timepicker extends SimpleModule
     @_renderTime()
 
   _renderTime: ->
-    meridiem = @_t @time.format('a')
-    @el.find('.time').text(meridiem + ' ' + @time.format(@_t('time-format')))
-    @target.val(@time.format('HH:mm'))
+    timeStr = @time.clone().locale(@constructor.locale.toLowerCase()).format('LT')
+    @el.find('.time').text(timeStr)
+    @target.val(@time.format(@opts.format))
 
   _setPosition: ->
     offset = @target.offset()
@@ -156,7 +153,6 @@ class Timepicker extends SimpleModule
       'top': offset.top + @target.outerHeight(true) + @opts.offset
 
   show: ->
-    @oldTime = @target.val()
     @el.show()
 
   hide: ->
@@ -178,6 +174,8 @@ class Timepicker extends SimpleModule
     minute = @time.format('mm')
     minute = Math.round(minute / 5) * 5 #force end with 5/0
     @time.set('minute', minute)
+
+    @oldTime = @time.format(@opts.format)
 
     @el.find("[data-meridiem=#{meridiem}]").addClass('active')
       .siblings().removeClass('active')
