@@ -37,7 +37,7 @@
             <h1>Simple Timepicker</h1>
         </header>
         <section>
-            <input id="time" />
+            点击选择时间：<input id="time" />
         </section>
     </div>
     <script type="text/javascript" src="vendor/bower/jquery/dist/jquery.min.js"></script>
@@ -45,7 +45,11 @@
     <script type="text/javascript" src="vendor/bower/moment/min/moment-with-locales.js"></script>
     <script type="text/javascript" src="lib/timepicker.js"></script> 
     <script type="text/javascript">
-        var timepicker = simple.timepicker({target: '#time', time: '08:42', inline: true});
+        $(document).ready(function(){
+            var timepicker = simple.timepicker({target: '#time', time: '08:00', offset: 10});
+            timepicker.on('select', function(e, time, timeStr){
+            });
+        });
     </script>
 </body>
 

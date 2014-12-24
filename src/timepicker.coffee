@@ -33,8 +33,8 @@ class Timepicker extends SimpleModule
         <div class="minutes"></div>
       </div>
       <div class="buttons">
-        <div class="btn btn-ok">#{@_t('ok')}</div>
-        <div class="link link-cancel">#{@_t('cancel')}</div>
+        <button class="btn btn-ok">#{@_t('ok')}</button>
+        <a class="link link-cancel">#{@_t('cancel')}</a>
       </div>
     </div>
   """
@@ -46,7 +46,7 @@ class Timepicker extends SimpleModule
     @target = $(@opts.target)
     throw new Error "simple-timepicker: target option is invalid" if @target.length == 0 or not @target.is 'input'
 
-    @target.data @
+    @target.data 'timepicker', @
 
     @_render()
     @_bind()
@@ -73,6 +73,7 @@ class Timepicker extends SimpleModule
     @setTime(@opts.time)
 
     if @opts.inline
+      @el.addClass 'inline'
       @el.insertAfter @target
     else
       @el.css('display', 'none')
@@ -94,16 +95,18 @@ class Timepicker extends SimpleModule
     @el.on 'mousedown.simple-timepicker', ->
       false
 
-    @el.on 'click.simple-timepicker', '.link-cancel', (e) =>
+    @el.on 'click.simple-timepicker', '.link', (e) =>
       e.preventDefault()
       @target.val(@oldTime)
       @hide() unless @opts.inline
 
-    @el.on 'click.simple-timepicker', '.btn-ok', =>
+      @trigger 'cancel'
+
+    @el.on 'click.simple-timepicker', '.btn', =>
       @oldTime = @target.val()
       @hide() unless @opts.inline
       @target.blur()
-      @trigger('timepicked', [@time])
+      @trigger('select', [@time, @_formatTimeStr()])
 
     @el.on 'click.simple-timepicker', '.clock', (e) =>
       $target = $(e.currentTarget)
@@ -140,9 +143,16 @@ class Timepicker extends SimpleModule
     @_renderTime()
 
   _renderTime: ->
-    timeStr = @time.clone().locale(@constructor.locale.toLowerCase()).format('LT')
-    @el.find('.time').text(timeStr)
+    @el.find('.time').text(@_formatTimeStr())
     @target.val(@time.format(@opts.format))
+
+  _formatTimeStr: () ->
+    timeStr = @time.clone().locale(@constructor.locale.toLowerCase()).format('LT')
+    if @constructor.locale is 'zh-CN'
+      if @time.format('mm') is '00'
+        timeStr.replace /00$/, '整'
+      else
+        timeStr += '分'
 
   _setPosition: ->
     offset = @target.offset()
@@ -169,11 +179,13 @@ class Timepicker extends SimpleModule
 
     @time = moment() unless @time.isValid()
 
-    meridiem = @time.format('a')
+    meridiem = @time.clone().locale('en').format('a') #global moment() may not be English
     hour = @time.format('hh')
     minute = @time.format('mm')
     minute = Math.round(minute / 5) * 5 #force end with 5/0
     @time.set('minute', minute)
+    minute = @time.format('mm')
+    hour = '00' if hour is '12'
 
     @oldTime = @time.format(@opts.format)
 
