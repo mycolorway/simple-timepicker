@@ -10,14 +10,15 @@ $bg-color: #fefefe;
   font-size: 12px;
   text-align: center;
   color: #333;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
+  padding: 5px;
+  border: 1px solid #dddddd;
 
-  &:not(.inline) {
-    padding: 5px;
-    border: 1px solid #dddddd;
+  &.inline {
+    border: none;
+    padding: 0;
   }
+
   .time {
     font-size: 14px;
     margin: 2px 0 5px 0;
@@ -31,11 +32,11 @@ $bg-color: #fefefe;
         padding: 2px 3px;
         cursor: pointer;
         background: $default-color;
-        &.active {
-          background: $active-color;
-        }
         &:hover {
           background: $hover-color;
+        }
+        &.active {
+          background: $active-color;
         }
       }
     }
@@ -55,44 +56,26 @@ $bg-color: #fefefe;
     }
 
     .hour, .minute {
-      -webkit-box-sizing: border-box;
-      -moz-box-sizing: border-box;
       box-sizing: border-box;
       height: 20px;
       width: 20px;
       display: inline-block;
       cursor: pointer;
       background: $default-color;
-      &.active {
-        background: $active-color !important;
-      }
       &:hover {
         background: $hover-color;
       }
+      &.active {
+        background: $active-color;
+      }
     }
   }
+
   .buttons {
-    margin-top: 10px;
-    margin-bottom: 5px;
-    &>* {
-      display: inline-block;
-      cursor: pointer;
-    }
+    margin: 10px 0 5px 0;
+
     .btn {
-      color: #fff;
-      background-color: #8baf47;
-      border-radius: 3px;
-      padding: 3px 7px;
       margin-right: 5px;
-      border: 1px solid transparent;
-
-      &:hover {
-        background-color:#9fc25b;
-      }
-
-      &:active {
-        background-color:#b6d971;
-      }
     }
 
     .link {

@@ -5,13 +5,13 @@
   font-size: 12px;
   text-align: center;
   color: #333;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
-}
-.simple-timepicker:not(.inline) {
   padding: 5px;
   border: 1px solid #dddddd;
+}
+.simple-timepicker.inline {
+  border: none;
+  padding: 0;
 }
 .simple-timepicker .time {
   font-size: 14px;
@@ -26,11 +26,11 @@
   cursor: pointer;
   background: #f0f0f0;
 }
-.simple-timepicker .picker .meridiem .clock.active {
-  background: #c3deee;
-}
 .simple-timepicker .picker .meridiem .clock:hover {
   background: #C2D8FF;
+}
+.simple-timepicker .picker .meridiem .clock.active {
+  background: #c3deee;
 }
 .simple-timepicker .picker .hours, .simple-timepicker .picker .minutes {
   display: inline-block;
@@ -45,8 +45,6 @@
   font-weight: bold;
 }
 .simple-timepicker .picker .hour, .simple-timepicker .picker .minute {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
   box-sizing: border-box;
   height: 20px;
   width: 20px;
@@ -54,33 +52,17 @@
   cursor: pointer;
   background: #f0f0f0;
 }
-.simple-timepicker .picker .hour.active, .simple-timepicker .picker .minute.active {
-  background: #c3deee !important;
-}
 .simple-timepicker .picker .hour:hover, .simple-timepicker .picker .minute:hover {
   background: #C2D8FF;
 }
-.simple-timepicker .buttons {
-  margin-top: 10px;
-  margin-bottom: 5px;
+.simple-timepicker .picker .hour.active, .simple-timepicker .picker .minute.active {
+  background: #c3deee;
 }
-.simple-timepicker .buttons > * {
-  display: inline-block;
-  cursor: pointer;
+.simple-timepicker .buttons {
+  margin: 10px 0 5px 0;
 }
 .simple-timepicker .buttons .btn {
-  color: #fff;
-  background-color: #8baf47;
-  border-radius: 3px;
-  padding: 3px 7px;
   margin-right: 5px;
-  border: 1px solid transparent;
-}
-.simple-timepicker .buttons .btn:hover {
-  background-color: #9fc25b;
-}
-.simple-timepicker .buttons .btn:active {
-  background-color: #b6d971;
 }
 .simple-timepicker .buttons .link {
   color: #666666;

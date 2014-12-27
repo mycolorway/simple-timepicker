@@ -34,7 +34,7 @@ class Timepicker extends SimpleModule
       </div>
       <div class="buttons">
         <button class="btn btn-ok">#{@_t('ok')}</button>
-        <a class="link link-cancel">#{@_t('cancel')}</a>
+        <a class="link link-cancel" href="javascript:;">#{@_t('cancel')}</a>
       </div>
     </div>
   """

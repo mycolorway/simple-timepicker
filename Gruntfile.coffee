@@ -57,7 +57,6 @@ module.exports = (grunt) ->
       test:
         src: ['lib/**/*.js']
         options:
-          outfile: 'spec/index.html'
           styles: 'styles/timepicker.css'
           specs: 'spec/timepicker-spec.js'
           vendor: [
