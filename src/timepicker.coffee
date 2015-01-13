@@ -113,11 +113,7 @@ class Timepicker extends SimpleModule
       $target.addClass('active')
         .siblings().removeClass('active')
 
-      if $target.hasClass('pm')
-        @hours.find('.hour[data-hour=00]').text('12')
-      else
-        @hours.find('.hour[data-hour=00]').text('00')
-
+      @_checkMeridiem()
       @_refreshTime()
 
     @el.on 'click.simple-timepicker', '.hour', (e) =>
@@ -145,7 +141,7 @@ class Timepicker extends SimpleModule
     hour = @el.find('.hour.active').data 'hour'
     minute = @el.find('.minute.active').data 'minute'
 
-    @time = moment("#{meridiem} #{hour}:#{minute}",'a hh:mm')
+    @time = moment("#{meridiem} #{hour}:#{minute}",'a hh:mm', 'en').locale(moment.locale())
     @_renderTime()
 
   _renderTime: ->
@@ -167,6 +163,12 @@ class Timepicker extends SimpleModule
       'z-index': 100
       'left': offset.left
       'top': offset.top + @target.outerHeight(true) + @opts.offset
+
+  _checkMeridiem: ->
+    if @el.find('.meridiem .clock.pm').hasClass('active')
+      @hours.find('.hour[data-hour=00]').text('12')
+    else
+      @hours.find('.hour[data-hour=00]').text('00')
 
   show: ->
     @el.show()
@@ -202,6 +204,8 @@ class Timepicker extends SimpleModule
     @el.find("[data-minute=#{minute}]").addClass('active')
       .siblings().removeClass('active')
 
+
+    @_checkMeridiem()
     @_renderTime()
 
   destroy: ->
