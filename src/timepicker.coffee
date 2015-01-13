@@ -39,8 +39,12 @@ class Timepicker extends SimpleModule
 
     @target.data 'timepicker', @
 
+
     @_render()
     @_bind()
+
+    @opts.time ||= @target.val()
+    @setTime @opts.time
 
   _render: ->
     @el = $(@tpl)
@@ -60,8 +64,6 @@ class Timepicker extends SimpleModule
       $(@minuteTpl).text(minute)
         .attr('data-minute', minute)
         .appendTo @minutes
-
-    @setTime(@opts.time)
 
     if @opts.inline
       @el.addClass 'inline'
@@ -92,6 +94,7 @@ class Timepicker extends SimpleModule
 
       @_checkMeridiem()
       @_refreshTime()
+      @trigger('select', [@time, 'meridiem'])
 
     @el.on 'click.simple-timepicker', '.hour', (e) =>
       $target = $(e.currentTarget)
@@ -99,15 +102,18 @@ class Timepicker extends SimpleModule
         .siblings().removeClass('active')
 
       @_refreshTime()
+      @trigger('select', [@time, 'hour'])
 
     @el.on 'click.simple-timepicker', '.minute', (e) =>
       $target = $(e.currentTarget)
       $target.addClass('active')
         .siblings().removeClass('active')
 
+      unless @opts.inline
+        @target.blur()
+
       @_refreshTime()
-      @hide() unless @opts.inline
-      @target.blur()
+      @trigger('select', [@time, 'minute'])
 
   _unbind: ->
     @el.off '.simple-timepicker'
@@ -121,7 +127,6 @@ class Timepicker extends SimpleModule
 
     @time = moment("#{meridiem} #{hour}:#{minute}",'a hh:mm', 'en').locale(moment.locale())
     @_renderTime()
-    @trigger('select', [@time])
 
   _renderTime: ->
     @target.val(@time.format(@opts.format))
