@@ -21,7 +21,6 @@ describe 'Simple timepicker', ->
       target: '#time'
 
     expect($('.simple-timepicker')).toExist()
-    expect($('.simple-timepicker').find('.time')).toExist()
     expect($('.simple-timepicker').find('.picker .clock')).toExist()
     expect($('.simple-timepicker').find('.minutes, .hours, .buttons')).toExist()
 
@@ -98,24 +97,7 @@ describe 'Simple timepicker', ->
     $timepicker.find('[data-hour=11]').click()
     $timepicker.find('[data-minute=30]').click()
 
-    $timepicker.find('.btn').click()
     expect($('#time').val()).toBe('23:30')
-
-  it 'shouldn\'t change its time when call cancel button', ->
-    timepicker = simple.timepicker
-      target: '#time'
-      inline: true
-      time: '09:00'
-
-    expect($('#time').val()).not.toBe('23:00')
-
-    $timepicker = $('.simple-timepicker')
-    $timepicker.find('[data-meridiem=pm]').click()
-    $timepicker.find('[data-hour=11]').click()
-
-    expect($('#time').val()).toBe('23:00')
-    $timepicker.find('.link').click()
-    expect($('#time').val()).toBe('09:00')
 
   it 'should reset all when call destroy', ->
     timepicker = simple.timepicker

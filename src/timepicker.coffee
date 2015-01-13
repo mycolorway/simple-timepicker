@@ -4,13 +4,9 @@ class Timepicker extends SimpleModule
     'zh-CN':
       'am': '上午'
       'pm': '下午'
-      'ok': '确定'
-      'cancel': '取消'
     'en':
       'am': 'AM'
       'pm': 'PM'
-      'ok': 'OK'
-      'cancel': 'cancel'
   opts:
     target: null
     inline: false
@@ -22,7 +18,6 @@ class Timepicker extends SimpleModule
 
   tpl: """
     <div class="simple-timepicker">
-      <div class="time"></div>
       <div class="picker">
         <div class="meridiem">
           <div class="clock am" data-meridiem="am">#{@_t('am')}</div>
@@ -31,10 +26,6 @@ class Timepicker extends SimpleModule
         <div class="hours"></div>
         <span class="divider">:</span>
         <div class="minutes"></div>
-      </div>
-      <div class="buttons">
-        <button class="btn btn-ok">#{@_t('ok')}</button>
-        <a class="link link-cancel" href="javascript:;">#{@_t('cancel')}</a>
       </div>
     </div>
   """
@@ -85,7 +76,6 @@ class Timepicker extends SimpleModule
       .focus()
 
       @target.on 'blur.simple-timepicker', (e) =>
-        @target.val(@oldTime)
         @hide()
 
   _bind: ->
@@ -94,19 +84,6 @@ class Timepicker extends SimpleModule
 
     @el.on 'mousedown.simple-timepicker', ->
       false
-
-    @el.on 'click.simple-timepicker', '.link', (e) =>
-      e.preventDefault()
-      @target.val(@oldTime)
-      @hide() unless @opts.inline
-
-      @trigger 'cancel'
-
-    @el.on 'click.simple-timepicker', '.btn', =>
-      @oldTime = @target.val()
-      @hide() unless @opts.inline
-      @target.blur()
-      @trigger('select', [@time, @_formatTimeStr()])
 
     @el.on 'click.simple-timepicker', '.clock', (e) =>
       $target = $(e.currentTarget)
@@ -129,7 +106,8 @@ class Timepicker extends SimpleModule
         .siblings().removeClass('active')
 
       @_refreshTime()
-      @el.find('.btn').click()
+      @hide() unless @opts.inline
+      @target.blur()
 
   _unbind: ->
     @el.off '.simple-timepicker'
@@ -143,18 +121,10 @@ class Timepicker extends SimpleModule
 
     @time = moment("#{meridiem} #{hour}:#{minute}",'a hh:mm', 'en').locale(moment.locale())
     @_renderTime()
+    @trigger('select', [@time])
 
   _renderTime: ->
-    @el.find('.time').text(@_formatTimeStr())
     @target.val(@time.format(@opts.format))
-
-  _formatTimeStr: () ->
-    timeStr = @time.clone().locale(@constructor.locale.toLowerCase()).format('LT')
-    if @constructor.locale is 'zh-CN'
-      if @time.format('mm') is '00'
-        timeStr.replace /00$/, '整'
-      else
-        timeStr += '分'
 
   _setPosition: ->
     offset = @target.offset()
@@ -194,8 +164,6 @@ class Timepicker extends SimpleModule
     @time.set('minute', minute)
     minute = @time.format('mm')
     hour = '00' if hour is '12'
-
-    @oldTime = @time.format(@opts.format)
 
     @el.find("[data-meridiem=#{meridiem}]").addClass('active')
       .siblings().removeClass('active')

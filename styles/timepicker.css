@@ -1,12 +1,12 @@
 .simple-timepicker {
   white-space: normal;
-  width: 150px;
+  width: 160px;
   background: #fefefe;
   font-size: 12px;
   text-align: center;
   color: #333;
   box-sizing: border-box;
-  padding: 5px;
+  padding: 10px;
   border: 1px solid #dddddd;
 }
 .simple-timepicker.inline {
@@ -58,16 +58,4 @@
 }
 .simple-timepicker .picker .hour.active, .simple-timepicker .picker .minute.active {
   background: #c3deee;
-}
-.simple-timepicker .buttons {
-  margin: 10px 0 5px 0;
-}
-.simple-timepicker .buttons .btn {
-  margin-right: 5px;
-}
-.simple-timepicker .buttons .link {
-  color: #666666;
-}
-.simple-timepicker .buttons .link:hover {
-  color: #4298ba;
 }

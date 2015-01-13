@@ -5,13 +5,13 @@ $bg-color: #fefefe;
 
 .simple-timepicker {
   white-space: normal;
-  width: 150px;
+  width: 160px;
   background: $bg-color;
   font-size: 12px;
   text-align: center;
   color: #333;
   box-sizing: border-box;
-  padding: 5px;
+  padding: 10px;
   border: 1px solid #dddddd;
 
   &.inline {
@@ -68,21 +68,6 @@ $bg-color: #fefefe;
       }
       &.active {
         background: $active-color;
-      }
-    }
-  }
-
-  .buttons {
-    margin: 10px 0 5px 0;
-
-    .btn {
-      margin-right: 5px;
-    }
-
-    .link {
-      color: #666666;
-      &:hover {
-        color: #4298ba;
       }
     }
   }
