@@ -113,6 +113,11 @@ class Timepicker extends SimpleModule
       $target.addClass('active')
         .siblings().removeClass('active')
 
+      if $target.hasClass('pm')
+        @hours.find('.hour[data-hour=00]').text('12')
+      else
+        @hours.find('.hour[data-hour=00]').text('00')
+
       @_refreshTime()
 
     @el.on 'click.simple-timepicker', '.hour', (e) =>
@@ -128,6 +133,7 @@ class Timepicker extends SimpleModule
         .siblings().removeClass('active')
 
       @_refreshTime()
+      @el.find('.btn').click()
 
   _unbind: ->
     @el.off '.simple-timepicker'

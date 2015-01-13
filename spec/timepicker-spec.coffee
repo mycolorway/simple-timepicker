@@ -107,14 +107,13 @@ describe 'Simple timepicker', ->
       inline: true
       time: '09:00'
 
-    expect($('#time').val()).not.toBe('23:30')
+    expect($('#time').val()).not.toBe('23:00')
 
     $timepicker = $('.simple-timepicker')
     $timepicker.find('[data-meridiem=pm]').click()
     $timepicker.find('[data-hour=11]').click()
-    $timepicker.find('[data-minute=30]').click()
 
-    expect($('#time').val()).toBe('23:30')
+    expect($('#time').val()).toBe('23:00')
     $timepicker.find('.link').click()
     expect($('#time').val()).toBe('09:00')
 
