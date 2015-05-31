@@ -19,7 +19,10 @@ module.exports = (grunt) ->
         options:
           bare: true
         files:
-          'lib/timepicker.js': 'src/timepicker.coffee'
+          'lib/timepicker.js': [
+            'src/timepicker.coffee'
+            'src/*.coffee'
+          ]
       spec:
         files:
           'spec/timepicker-spec.js': 'spec/timepicker-spec.coffee'
@@ -32,11 +35,11 @@ module.exports = (grunt) ->
         objectToExport: 'timepicker'
         globalAlias: 'timepicker'
         deps:
-          'default': ['$', 'SimpleModule']
-          amd: ['jquery', 'simple-module']
-          cjs: ['jquery', 'simple-module']
+          'default': ['$', 'SimpleModule', 'SimpleDatepicker']
+          amd: ['jquery', 'simple-module', 'simple-datepicker']
+          cjs: ['jquery', 'simple-module', 'simple-datepicker']
           global:
-            items: ['jQuery', 'SimpleModule']
+            items: ['jQuery', 'SimpleModule', 'simple.datepicker']
             prefix: ''
 
     watch:
@@ -49,9 +52,9 @@ module.exports = (grunt) ->
       src:
         files: ['src/**/*.coffee']
         tasks: ['coffee:src', 'umd']
-      jasmine:
-        files: ['lib/**/*.js', 'spec/**/*.js']
-        tasks: 'jasmine'
+#      jasmine:
+#        files: ['lib/**/*.js', 'spec/**/*.js']
+#        tasks: 'jasmine'
 
     jasmine:
       test:
@@ -72,5 +75,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-jasmine'
   grunt.loadNpmTasks 'grunt-umd'
 
-  grunt.registerTask 'default', ['sass', 'coffee', 'umd', 'jasmine', 'watch']
-  grunt.registerTask 'test', ['sass', 'coffee', 'umd', 'jasmine']
+  grunt.registerTask 'default', ['sass', 'coffee', 'umd', 'watch']
+  grunt.registerTask 'test', ['sass', 'coffee', 'umd']

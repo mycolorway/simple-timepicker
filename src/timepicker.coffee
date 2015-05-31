@@ -1,189 +1,212 @@
 
 class Timepicker extends SimpleModule
-  @i18n:
-    'zh-CN':
-      'am': '上午'
-      'pm': '下午'
-    'en':
-      'am': 'AM'
-      'pm': 'PM'
+
   opts:
-    target: null
+    list: ['hour', '%-', 'minute']
+    el: null
     inline: false
-    offset: 0
-    format: 'HH:mm'
+    valueFormat: 'HH:mm'
+    displayFormat: 'HH点mm分'
+    defaultView: 'auto'
+    viewOpts:
+      minute:
+        forceFormat: true #format minute end with 0/5
 
-  hoursOpts: ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11']
-  minutesOpts: ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55']
-
-  tpl: """
-    <div class="simple-timepicker">
-      <div class="picker">
-        <div class="meridiem">
-          <div class="clock am" data-meridiem="am">#{@_t('am')}</div>
-          <div class="clock pm" data-meridiem="pm">#{@_t('pm')}</div>
-        </div>
-        <div class="hours"></div>
-        <span class="divider">:</span>
-        <div class="minutes"></div>
-      </div>
-    </div>
-  """
-
-  hourTpl: '<div class="hour"></div>'
-  minuteTpl: '<div class="minute"></div>'
+  # add constructor of view
+  @addView: (view) ->
+    unless @views
+      @views = []
+    @views[view::name] = view
 
   _init: ->
-    @target = $(@opts.target)
-    throw new Error "simple-timepicker: target option is invalid" if @target.length == 0 or not @target.is 'input'
+    @view = []
+    @viewList = []
 
-    @target.data 'timepicker', @
+    @el = $(@opts.el)
 
+    unless @el.length
+      throw 'simple timepicker: option el is required'
+      return
+
+    @el.data 'timepicker', @
+    val = @el.val() || moment()
+    @date = if moment.isMoment(val) then val else moment(val, @opts.valueFormat)
 
     @_render()
     @_bind()
 
-    @opts.time ||= @target.val()
-    @setTime @opts.time
-
   _render: ->
-    @el = $(@tpl)
-    @el.data @
-
-    @hours = @el.find('.hours')
-    @minutes = @el.find('.minutes')
-
-    #renderHours
-    for hour in @hoursOpts
-      $(@hourTpl).text(hour)
-        .attr('data-hour', hour)
-        .appendTo @hours
-
-    #renderMinutes
-    for minute in @minutesOpts
-      $(@minuteTpl).text(minute)
-        .attr('data-minute', minute)
-        .appendTo @minutes
+    tpl = '''
+      <div class="simple-timepicker">
+        <div class="timepicker-header">
+        </div>
+        <div class="timepicker-panels">
+        </div>
+      </div>
+    '''
+    @picker = $(tpl)
+    @headerContainer = @picker.find('.timepicker-header')
+    @panelContainer = @picker.find('.timepicker-panels')
+    @_renderViews()
 
     if @opts.inline
-      @el.addClass 'inline'
-      @el.insertAfter @target
+      @picker.insertAfter @el
+      @show()
     else
-      @el.css('display', 'none')
-        .appendTo 'body'
-      @_setPosition()
+      @_renderFakeInput()
+      @picker.appendTo 'body'
 
-      @target.on 'focus.simple-timepicker', =>
-        @show()
-      .focus()
+  _renderFakeInput: ->
+    type = @el.attr 'type'
+    @input = $('<input />').addClass('display-input').attr
+      'readonly': 'true'
+      'type': type
+    .css
+        'cursor': 'pointer'
 
-      @target.on 'blur.simple-timepicker', (e) =>
-        @hide()
+    @input.insertAfter @el
+    @el.hide()
 
-  _bind: ->
-    @el.on 'click.simple-timepicker', ->
-      false
+  _renderViews: ->
+    for name in @opts.list
+      if name.indexOf('%') is -1
+        opt =
+          parent: @
+          inputContainer: @headerContainer
+          panelContainer: @panelContainer
+        opt.defaultValue = switch name
+          when 'hour'
+            @date.hour()
+          when 'minute'
+            @date.minute()
 
-    @el.on 'mousedown.simple-timepicker', ->
-      false
-
-    @el.on 'click.simple-timepicker', '.clock', (e) =>
-      $target = $(e.currentTarget)
-      $target.addClass('active')
-        .siblings().removeClass('active')
-
-      @_checkMeridiem()
-      @_refreshTime()
-      @trigger('select', [@time, 'meridiem'])
-
-    @el.on 'click.simple-timepicker', '.hour', (e) =>
-      $target = $(e.currentTarget)
-      $target.addClass('active')
-        .siblings().removeClass('active')
-
-      @_refreshTime()
-      @trigger('select', [@time, 'hour'])
-
-    @el.on 'click.simple-timepicker', '.minute', (e) =>
-      $target = $(e.currentTarget)
-      $target.addClass('active')
-        .siblings().removeClass('active')
-
-      unless @opts.inline
-        @target.blur()
-
-      @_refreshTime()
-      @trigger('select', [@time, 'minute'])
-
-  _unbind: ->
-    @el.off '.simple-timepicker'
-    $(document).off '.simple-timepicker'
-    @target.off '.simple-timepicker'
-
-  _refreshTime: ->
-    meridiem = @el.find('.clock.active').data 'meridiem'
-    hour = @el.find('.hour.active').data 'hour'
-    minute = @el.find('.minute.active').data 'minute'
-
-    @time = moment("#{meridiem} #{hour}:#{minute}",'a hh:mm', 'en').locale(moment.locale())
-    @_renderTime()
-
-  _renderTime: ->
-    @target.val(@time.format(@opts.format))
+        $.extend opt, @opts['viewOpts'][name] if @opts['viewOpts'][name]
+        @view[name] = new @constructor.views[name](opt)
+        @viewList.push name
+        @_bindView(@view[name])
+      else
+        @headerContainer.append("<span>#{name.substr(1)}</span>")
 
   _setPosition: ->
-    offset = @target.offset()
-    @el.css
+    offset = @input.offset()
+    @picker.css
       'position': 'absolute'
       'z-index': 100
       'left': offset.left
-      'top': offset.top + @target.outerHeight(true) + @opts.offset
+      'top': offset.top + @input.outerHeight(true)
 
-  _checkMeridiem: ->
-    if @el.find('.meridiem .clock.pm').hasClass('active')
-      @hours.find('.hour[data-hour=00]').text('12')
+  _bind: ->
+    @picker.on 'click mousedown', ->
+      false
+
+    return if @opts.inline
+    @input.on 'focus.timepicker', =>
+      @show()
+
+    $(document).on 'click.timepicker', (e) =>
+      return if @input.is e.target
+      return if @picker.has(e.target).length
+      return if @picker.is e.target
+      @hide()
+
+  _bindView: (view) ->
+    view.on 'select', (e, event) =>
+      source = event.source
+      newDate = event.value
+
+      if newDate.hour
+        @date.hour newDate.hour
+
+      if newDate.minute
+        @date.minute newDate.minute
+
+      if event.finished
+        index = @viewList.indexOf(source)
+        if index is @viewList.length-1
+          # close panel
+          @_selectDate()
+        else
+          @view[@viewList[index+1]].setActive()
+
+    view.on 'showpanel', (e, event) =>
+      source = event.source
+      if event.prev
+        #show prev view
+        @view[source].setActive(false)
+        index = @viewList.indexOf(source) - 1
+        index = 0 if index < 0
+        @view[@viewList[index]].setActive()
+
+      else
+        for name in @viewList
+          @view[name].setActive(false) unless name is source
+
+    view.on 'close', (e, event) =>
+      if event?.selected
+        @_selectDate()
+      @hide() unless @opts.inline
+
+  _selectDate: ->
+    @el.val @date.format(@opts.valueFormat)
+    @input.val @date.format(@opts.displayFormat) if @input
+
+    @trigger 'select', [@date]
+    @hide() unless @opts.inline
+
+  setDate: (date) ->
+    @date = if moment.isMoment(date) then date else moment(date, @opts.valueFormat)
+    @el.val @date.format(@opts.valueFormat)
+    @input.val @date.format(@opts.displayFormat) if @input
+
+    @view['hour']?.trigger 'datechange', {hour: @date.hour()}
+    @view['minute']?.trigger 'datechange', {minute: @date.minute()}
+
+  clear: ->
+    @el.val ''
+    @date = moment()
+    for name in @viewList
+      @view[name].clear()
+
+  getDate: ->
+    if @el.val()
+      @date ||= moment(@el.val(), @opts.valueFormat)
     else
-      @hours.find('.hour[data-hour=00]').text('00')
+      null
 
   show: ->
-    @el.show()
+    @_setPosition() unless @opts.inline
+
+    @picker.show()
+    @picker.addClass 'active'
+    view = @opts.defaultView
+
+    if @viewList.indexOf(view) isnt -1
+      @view[view].setActive()
+    else
+      #deafultView is 'auto'
+      @view['hour'].setActive()
 
   hide: ->
-    @el.hide()
+    @picker.hide()
+    @picker.removeClass 'active'
 
-  getTime: ->
-    @time
-
-  setTime: (time) ->
-    if moment.isMoment(time)
-      @time = time
+  toggle: ->
+    if @picker.is '.active'
+      @hide()
     else
-      @time = moment(time, 'HH:mm')
-
-    @time = moment() unless @time.isValid()
-
-    meridiem = @time.clone().locale('en').format('a') #global moment() may not be English
-    hour = @time.format('hh')
-    minute = @time.format('mm')
-    minute = Math.round(minute / 5) * 5 #force end with 5/0
-    @time.set('minute', minute)
-    minute = @time.format('mm')
-    hour = '00' if hour is '12'
-
-    @el.find("[data-meridiem=#{meridiem}]").addClass('active')
-      .siblings().removeClass('active')
-    @el.find("[data-hour=#{hour}]").addClass('active')
-      .siblings().removeClass('active')
-    @el.find("[data-minute=#{minute}]").addClass('active')
-      .siblings().removeClass('active')
-
-
-    @_checkMeridiem()
-    @_renderTime()
+      @show()
 
   destroy: ->
-    @_unbind()
-    @el.remove()
+    @picker?.remove()
+    @picker = null
+
+    unless @opts.inline
+      @input.remove()
+      @el.show()
+      $(document).off '.timepicker'
+
 
 timepicker = (opts) ->
-  new Timepicker(opts)
+  return new Timepicker opts
+
+

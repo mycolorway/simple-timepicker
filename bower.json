@@ -27,7 +27,8 @@
   "dependencies": {
     "jquery": "2.x",
     "simple-module": "2.x",
-    "moment": "~2.8.4"
+    "moment": "~2.8.4",
+    "simple-datepicker": "#lc-new-monthpicker"
   },
   "devDependencies": {
     "jasmine-jquery": "2.x"
