@@ -108,10 +108,10 @@ class Timepicker extends SimpleModule
       source = event.source
       newDate = event.value
 
-      if newDate.hour
+      if newDate.hour isnt null
         @date.hour newDate.hour
 
-      if newDate.minute
+      if newDate.minute isnt null
         @date.minute newDate.minute
 
       if event.finished

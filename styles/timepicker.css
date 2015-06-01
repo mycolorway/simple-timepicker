@@ -36,21 +36,6 @@
 .simple-timepicker .timepicker-panels .panel.active {
   display: block;
 }
-.simple-timepicker .timepicker-panels .panel.panel-hour a.panel-item {
-  display: none;
-}
-.simple-timepicker .timepicker-panels .panel.panel-hour[data-meridiem=am] a[data-meridiem=am] {
-  display: inline-block;
-}
-.simple-timepicker .timepicker-panels .panel.panel-hour[data-meridiem=am] a[data-action=am] {
-  background: #cce5f1;
-}
-.simple-timepicker .timepicker-panels .panel.panel-hour[data-meridiem=pm] a[data-meridiem=pm] {
-  display: inline-block;
-}
-.simple-timepicker .timepicker-panels .panel.panel-hour[data-meridiem=pm] a[data-action=pm] {
-  background: #cce5f1;
-}
 .simple-timepicker .timepicker-panels .panel a.panel-item {
   display: inline-block;
   box-sizing: border-box;
@@ -66,14 +51,10 @@
 .simple-timepicker .timepicker-panels .panel a.panel-item.selected {
   background: #cce5f1;
 }
-.simple-timepicker .timepicker-panels .panel a.menu-item {
-  width: 50%;
-  padding: 5px 0;
-  text-align: center;
-  float: left;
-  box-sizing: border-box;
-  cursor: pointer;
+.simple-timepicker .timepicker-panels .panel.panel-hour a.panel-item {
+  width: 16.66%;
+  padding: 6px 8px;
 }
-.simple-timepicker .timepicker-panels .panel a.menu-item:hover {
-  background: #cbe0ff;
+.simple-timepicker .timepicker-panels .panel.panel-hour a.panel-item:nth-child(n + 7):not(:nth-child(n + 13)) {
+  border-bottom: 1px dashed #dfdfdf;
 }
