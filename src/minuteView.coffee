@@ -47,4 +47,4 @@ class MinuteView extends SimpleDatepicker.View
     @_refreshSelected()
     @_handleAction(if @isAM then 'am' else 'pm')
 
-Timepicker.addView MinuteView
+SimpleDatepicker.View.addView MinuteView

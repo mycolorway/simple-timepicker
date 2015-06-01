@@ -53,4 +53,4 @@ class Hourview extends SimpleDatepicker.View
     @_refreshSelected()
     @_handleAction(if @isAM then 'am' else 'pm')
 
-Timepicker.addView Hourview
+SimpleDatepicker.View.addView Hourview

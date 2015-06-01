@@ -12,12 +12,6 @@ class Timepicker extends SimpleModule
       minute:
         forceFormat: true #format minute end with 0/5
 
-  # add constructor of view
-  @addView: (view) ->
-    unless @views
-      @views = []
-    @views[view::name] = view
-
   _init: ->
     @view = []
     @viewList = []
@@ -81,7 +75,7 @@ class Timepicker extends SimpleModule
             @date.minute()
 
         $.extend opt, @opts['viewOpts'][name] if @opts['viewOpts'][name]
-        @view[name] = new @constructor.views[name](opt)
+        @view[name] = new SimpleDatepicker.View::constructor.views[name](opt)
         @viewList.push name
         @_bindView(@view[name])
       else
